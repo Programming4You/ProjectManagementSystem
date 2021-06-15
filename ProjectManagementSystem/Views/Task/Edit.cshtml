@@ -1,0 +1,94 @@
+﻿@using Microsoft.AspNetCore.Http
+@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims;
+@using ProjectManagementSystem.ViewModels
+@inject UserManager<ApplicationUser> UserManager
+@model ProjectManagementSystem.ViewModels.TaskViewModel
+
+@{ ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml"; }
+
+<h1>Edit</h1>
+
+@{ var loggedInUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    var loggedInUserRole = UserManager.Users.FirstOrDefault(x => x.Id == loggedInUser).RoleName; }
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.TaskID)
+            @Html.HiddenFor(m => m.ProjectCode)
+
+            @if (loggedInUserRole == "Administrator" || loggedInUserRole == "ProjectManager")
+            {
+            <div class="form-group">
+                <label asp-for="Status" class="control-label"></label>
+                <select asp-for="Status" asp-items="@TaskViewModel.Statuses">
+                    <option selected value=@Model.Status>@Model.Status</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="mr-4">Progress(%) </label>
+                <input asp-for="Progress" class="form-control" />
+                <span asp-validation-for="Progress" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Deadline" class="control-label"></label>
+                <input asp-for="Deadline" class="form-control" />
+                <span asp-validation-for="Deadline" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="mr-4">Assignee</label>
+                <select asp-for="AssigneeId" asp-items="@TaskViewModel.Developers">
+                    @if (@Model.Assignee != null)
+                    {
+                    <option selected value=@Model.AssigneeId>
+                        @Model.Assignee.Name @Model.Assignee.Surname
+                    </option>}
+                </select>
+             </div>
+            }
+
+            @if (loggedInUserRole == "Developer")
+            {
+             <div class="form-group">
+                <label asp-for="Status" class="control-label"></label>
+                <select asp-for="Status" asp-items="@TaskViewModel.Statuses">
+                    <option selected value=@Model.Status>@Model.Status</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="mr-4">Progress(%) </label>
+                <input asp-for="Progress" class="form-control" />
+                <span asp-validation-for="Progress" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            }
+
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    @Html.ActionLink("Back to List", "Projects", "Project", new { @class = "btn btn-primary" })
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

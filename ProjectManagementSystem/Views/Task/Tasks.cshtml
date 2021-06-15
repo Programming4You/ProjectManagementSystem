@@ -1,0 +1,77 @@
+﻿@model IEnumerable<ProjectManagementSystem.Models.Task>
+@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims;
+@inject UserManager<ApplicationUser> UserManager
+
+
+@{ ViewData["Title"] = "Tasks";
+    Layout = "~/Views/Shared/_Layout.cshtml"; }
+
+<h1>Tasks</h1>
+<br />
+@{ var loggedInUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    var loggedInUserRole = UserManager.Users.FirstOrDefault(x => x.Id == loggedInUser).RoleName; }
+
+<p>
+    @if (loggedInUserRole == "Administrator" || loggedInUserRole == "ProjectManager")
+    {
+@Html.ActionLink("Create Task", "Create", "Task", new { id = @Model.FirstOrDefault()?.Project.ProjectCode }, new { @class = "btn btn-info mb-3" })}
+</p>
+<p>
+    @Html.ActionLink("Back to List", "Projects", "Project")
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Progress)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Deadline)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
+            </th>
+            <th>
+                Assignee
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProjectCode)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+<tr>
+    <td>
+        @Html.DisplayFor(modelItem => item.Status)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Progress)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Deadline)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Description)
+    </td>
+    @if (item.Assignee != null)
+    {
+<td class="text-center">@item.Assignee.Name  @item.Assignee.Surname</td>}
+    <td>
+        @Html.DisplayFor(modelItem => item.ProjectCode)
+    </td>
+    <td>
+        @Html.ActionLink("Edit", "Edit", new { id = item.TaskID }, new { @class = "btn btn-primary" }) |
+        @Html.ActionLink("Details", "Details", new { id = item.TaskID }, new { @class = "btn btn-info" })  |
+        @Html.ActionLink("Delete", "Delete", new { id = item.TaskID }, new { @class = "btn btn-danger" })
+    </td>
+</tr>
+}
+    </tbody>
+</table>

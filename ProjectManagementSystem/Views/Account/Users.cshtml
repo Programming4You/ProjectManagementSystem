@@ -1,0 +1,32 @@
+﻿@model IEnumerable<ProjectManagementSystem.Models.ApplicationUser>
+@{ ViewData["Title"] = "Users"; }
+<h3 class="mb-3">Users</h3>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th class="text-center">@Html.DisplayNameFor(m => m.UserName)</th>
+            <th class="text-center">@Html.DisplayNameFor(m => m.Name)</th>
+            <th class="text-center">@Html.DisplayNameFor(m => m.Surname)</th>
+            <th class="text-center">@Html.DisplayNameFor(m => m.RoleName)</th>
+            <th class="text-center">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var i in Model)
+        {
+        <tr>
+            <td class="text-center">@i.UserName</td>
+            <td class="text-center">@i.Name</td>
+            <td class="text-center">@i.Surname</td>
+            <td class="text-center">@i.RoleName</td>
+            <td>
+                <div class="d-flex justify-content-between">
+                    @Html.ActionLink("Details", "Details", new { id = i.Id }, new { @class = "btn btn-info" })
+                    @Html.ActionLink("Edit", "Edit", new { id = i.Id }, new { @class = "btn btn-primary" })
+                    @Html.ActionLink("Delete", "Delete", new { id = i.Id }, new { @class = "btn btn-danger" })
+                </div>
+
+            </td>
+        </tr>}
+    </tbody>
+</table>

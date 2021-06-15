@@ -1,0 +1,37 @@
+﻿@model ProjectManagementSystem.Models.ApplicationUser
+@{ ViewData["Title"] = "Details"; }
+
+<div class="card" style="width:60%; margin:auto;">
+    <div class="card-header bg-dark text-white">
+        <h5>User Details</h5>
+    </div>
+    <div class="card-body">
+        <table class="table table-borderless">
+            <tr class="form-group">
+                <td><label asp-for="UserName"></label></td>
+                <td><input readonly="readonly" asp-for="UserName" class="form-control" /></td>
+                <td><span asp-validation-for="UserName" class="text-danger"></span></td>
+            </tr>
+            <tr class="form-group">
+                <td><label asp-for="Name"></label></td>
+                <td><input readonly="readonly" asp-for="Name" class="form-control" /></td>
+                <td><span asp-validation-for="Name" class="text-danger"></span></td>
+            </tr>
+            <tr class="form-group">
+                <td><label asp-for="Surname"></label></td>
+                <td><input readonly="readonly" asp-for="Surname" class="form-control" /></td>
+                <td><span asp-validation-for="Surname" class="text-danger"></span></td>
+            </tr>
+            <tr class="form-group">
+                <td><label asp-for="RoleName"></label></td>
+                <td><input readonly="readonly" asp-for="RoleName" class="form-control" /></td>
+                <td><span asp-validation-for="RoleName" class="text-danger"></span></td>
+            </tr>
+
+        </table>
+        <p>
+            @Html.ActionLink("Edit", "Edit", new { id = Model.Id }, new { @class = "btn btn-info mr-3" })
+            @Html.ActionLink("Back to List", "Users", "Account", new { @class = "btn btn-primary" })
+        </p>
+    </div>
+</div>

@@ -1,0 +1,54 @@
+﻿@using ProjectManagementSystem.ViewModels
+@model ProjectManagementSystem.ViewModels.TaskViewModel
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Create</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.TaskID)
+            @Html.HiddenFor(m => m.ProjectCode)
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Status" class="control-label"></label>
+                <select asp-for="Status" asp-items="@TaskViewModel.Statuses">
+                    <option value="">Select status</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Deadline" class="control-label"></label>
+                <input asp-for="Deadline" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-ddThh:mm")"/>
+                <span asp-validation-for="Deadline" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="mr-4">Assignee </label>
+                <select asp-for="AssigneeId" asp-items="@TaskViewModel.Developers">
+                    <option value="">Select assignee</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    @Html.ActionLink("Back to List", "Projects", "Project", new { @class = "btn btn-primary" })
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

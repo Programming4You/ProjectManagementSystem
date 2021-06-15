@@ -1,0 +1,48 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims;
+@using ProjectManagementSystem.ViewModels
+@inject UserManager<ApplicationUser> UserManager
+@model ProjectManagementSystem.ViewModels.ProjectViewModel
+
+@{ ViewData["Title"] = "Create";
+                Layout = "~/Views/Shared/_Layout.cshtml"; }
+
+<h1>Create</h1>
+
+@{ var loggedInUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    var loggedInUserRole = UserManager.Users.FirstOrDefault(x => x.Id == loggedInUser).RoleName; }
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="ProjectName" class="control-label"></label>
+                <input asp-for="ProjectName" class="form-control" />
+                <span asp-validation-for="ProjectName" class="text-danger"></span>
+            </div>
+            @if (loggedInUserRole == "Administrator")
+            {
+                <div class="form-group">
+                    <label class="mr-4">Project Manager:</label>
+                    <select asp-for="ProjectManagerId" asp-items="@ProjectViewModel.ProjectManagers">
+                        <option value="">Select manager</option>
+                    </select>
+                    <span asp-validation-for="ProjectManagerId" class="text-danger"></span>
+                </div>
+            }
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    @Html.ActionLink("Back to List", "Projects", "Project", new { @class = "btn btn-primary" })
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

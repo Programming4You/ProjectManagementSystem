@@ -1,0 +1,93 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims;
+@model IEnumerable<ProjectManagementSystem.Models.Project>
+@inject UserManager<ApplicationUser> UserManager
+
+
+@{
+    ViewData["Title"] = "Projects";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{ 
+    var loggedInUser = User.FindFirstValue(ClaimTypes.NameIdentifier);
+    var loggedInUserRole = UserManager.Users.FirstOrDefault(x => x.Id == loggedInUser).RoleName;
+    }
+<h3 class="mb-3">Projects</h3>
+
+<p>
+    @Html.ActionLink("Create New", "Create", "Project", null, new { @class = "btn btn-info" })
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ProjectCode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProjectName)
+            </th>
+            <th class="text-center">
+                Project Manager
+            </th>
+            @if (loggedInUserRole != "Developer")
+            {
+                <th>Progress(%)</th>
+            }
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProjectCode)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProjectName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProjectManager.Name)  @Html.DisplayFor(modelItem => item.ProjectManager.Surname)
+            </td>
+
+            @if (loggedInUserRole != "Developer")
+             {
+               <td class="text-center">
+                   @{
+                       var sum = 0;
+                       var result = "";
+
+                       @foreach (var t in item.Tasks)
+                       {
+                           sum += t.Progress;
+                       }
+
+                       var progress = item.Tasks.Count > 0 ? sum / item.Tasks.Count : 0;
+                       result = progress + " %";
+                    }
+                    @result
+               </td>
+             }
+
+            @if (loggedInUserRole == "Administrator")
+            {
+            <td>
+                @Html.ActionLink("Details", "Details", new { id = item.ProjectCode }, new { @class = "btn btn-info" }) |
+                @Html.ActionLink("Edit", "Edit", new { id = item.ProjectCode }, new { @class = "btn btn-primary" }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.ProjectCode }, new { @class = "btn btn-danger" })
+            </td>
+            }
+
+            @if (loggedInUserRole == "Administrator" || loggedInUserRole == "ProjectManager")
+            {
+            <td> @Html.ActionLink("Create Task", "Create", "Task", new { id = item.ProjectCode }, new { @class = "btn btn-info" }) </td>}
+
+                <td> @Html.ActionLink("Tasks", "Tasks", "Task", new { id = item.ProjectCode }, new { @class = "btn btn-info" }) </td>
+
+            </tr>
+            }
+    </tbody>
+</table>
